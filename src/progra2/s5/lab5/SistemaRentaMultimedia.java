@@ -9,7 +9,6 @@ package progra2.s5.lab5;
  * @author ashley
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -18,19 +17,21 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Calendar;
 import javax.swing.*;
 import java.io.File;
+import com.toedter.calendar.JCalendar;
 
 public class SistemaRentaMultimedia extends JFrame {
 
     private static ArrayList<RentItem> listaItems = new ArrayList<>();
+
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(
                 UIManager.getSystemLookAndFeelClassName()
             );
         } catch (Exception ex) {
-
         }
 
         SwingUtilities.invokeLater(() -> {
@@ -101,25 +102,26 @@ public class SistemaRentaMultimedia extends JFrame {
     }
 
     private static void opcionAgregarItem() {
-       String[] opciones = {"Game", "Movie"};
+        String mensajeTipo = "¿Qué tipo de ítem desea agregar?\n" +
+                             "1. Movie\n" +
+                             "2. Game\n";
+        String textoTipo = JOptionPane.showInputDialog(null,
+                mensajeTipo,
+                "Agregar Ítem",
+                JOptionPane.QUESTION_MESSAGE);
 
-        int eleccion = JOptionPane.showOptionDialog(
-                null,
-                "¿Que deseas agregar?",
-                "Elige una opcion",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                opciones,
-                opciones[0]
-        );
+        if (textoTipo == null) return;
 
-        if (eleccion == 0) {
-            System.out.println("Elegiste Game");
-        } else if (eleccion == 1) {
-            System.out.println("Elegiste Movie");
+        int tipoItem;
+        try {
+            tipoItem = Integer.parseInt(textoTipo);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Tipo inválido.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
         }
-
 
         String codigoIngresado = JOptionPane.showInputDialog(null,
                 "Ingrese código del ítem:",
@@ -149,8 +151,7 @@ public class SistemaRentaMultimedia extends JFrame {
 
         RentItem nuevoItem = null;
 
-        if (eleccion == 0) {
-
+        if (tipoItem == 1) {
             double precioBase;
             try {
                 String textoPrecio = JOptionPane.showInputDialog(null,
@@ -177,44 +178,28 @@ public class SistemaRentaMultimedia extends JFrame {
                     JOptionPane.YES_NO_OPTION);
 
             if (respuestaFecha == JOptionPane.YES_OPTION) {
-                try {
-                    String textoAnio = JOptionPane.showInputDialog(null,
-                            "Ingrese año de estreno:",
-                            "Fecha estreno",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (textoAnio == null) return;
-
-                    String textoMes = JOptionPane.showInputDialog(null,
-                            "Ingrese mes (1-12):",
-                            "Fecha estreno",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (textoMes == null) return;
-
-                    String textoDia = JOptionPane.showInputDialog(null,
-                            "Ingrese día:",
-                            "Fecha estreno",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (textoDia == null) return;
-
-                    int anio = Integer.parseInt(textoAnio);
-                    int mes = Integer.parseInt(textoMes);
-                    int dia = Integer.parseInt(textoDia);
-
+                Calendar fechaSeleccionada = pedirFechaConJCalendar();
+                if (fechaSeleccionada != null) {
+                    int anio = fechaSeleccionada.get(Calendar.YEAR);
+                    int mes = fechaSeleccionada.get(Calendar.MONTH) + 1;
+                    int dia = fechaSeleccionada.get(Calendar.DAY_OF_MONTH);
                     nuevaPelicula.setFechaEstreno(anio, mes, dia);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "Fecha inválida, se mantiene la fecha actual.",
-                            "Advertencia",
-                            JOptionPane.WARNING_MESSAGE);
                 }
             }
 
             nuevoItem = nuevaPelicula;
 
-        } else if (eleccion == 1) {
+        } else if (tipoItem == 2) {
             Game nuevoJuego = new Game(codigoIngresado.trim(),
                                        nombreIngresado.trim());
             nuevoItem = nuevoJuego;
+
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Tipo de ítem no reconocido.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         try {
@@ -254,6 +239,26 @@ public class SistemaRentaMultimedia extends JFrame {
             File archivoSeleccionado = selectorArchivos.getSelectedFile();
             return new ImageIcon(archivoSeleccionado.getAbsolutePath());
         }
+        return null;
+    }
+
+    private static Calendar pedirFechaConJCalendar() {
+        JCalendar calendario = new JCalendar();
+
+        int opcion = JOptionPane.showConfirmDialog(
+                null,
+                calendario,
+                "Seleccione una fecha",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (opcion == JOptionPane.OK_OPTION) {
+            Calendar fecha = Calendar.getInstance();
+            fecha.setTime(calendario.getDate());
+            return fecha;
+        }
+
         return null;
     }
 
@@ -325,7 +330,7 @@ public class SistemaRentaMultimedia extends JFrame {
 
         JLabel etiquetaImagen = new JLabel("IMAGEN A INSERTAR", SwingConstants.CENTER);
         etiquetaImagen.setOpaque(true);
-        etiquetaImagen.setBackground(new Color(200, 200, 200)); // gris
+        etiquetaImagen.setBackground(new Color(200, 200, 200));
         etiquetaImagen.setPreferredSize(new Dimension(250, 250));
         etiquetaImagen.setMaximumSize(new Dimension(250, 250));
 
