@@ -8,6 +8,24 @@ package progra2.s5.lab5;
  *
  * @author ashley
  */
+
+import java.util.Calendar;
+import java.util.ArrayList;
+
 public class Game extends RentItem implements MenuActions {
+    
+    public Calendar fechaPublicacion;
+    public ArrayList<String> listaEspecificaciones;
+    
+    public Game(String codigoItem, String nombreItem){
+        
+        super(codigoItem, nombreItem, 20.0);
+        this.fechaPublicacion = Calendar.getInstance();
+        this.listaEspecificaciones = new ArrayList<>();
+        
+    }
+    
+    
+    
     
 }
