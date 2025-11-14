@@ -11,7 +11,7 @@ package progra2.s5.lab5;
 
 import javax.swing.ImageIcon;
 
-public class RentItem {
+public abstract class RentItem {
     
     public String codigoItem;
     public String nombreItem;
@@ -50,12 +50,13 @@ public class RentItem {
         this.imagenItem = imageItem;
     }
     
+    public abstract double pagoRenta(int dias);
+    
     public String toString(){
         return "Codigo: " + codigoItem +
                 ", Nombre: " + nombreItem +
                 ", Precio Base: " + precioBaseRenta +
                 ", Copias: " + cantidadCopias;
     }
-    
     
 }
