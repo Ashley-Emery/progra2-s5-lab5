@@ -101,26 +101,25 @@ public class SistemaRentaMultimedia extends JFrame {
     }
 
     private static void opcionAgregarItem() {
-        String mensajeTipo = "¿Qué tipo de ítem desea agregar?\n" +
-                             "1. Movie\n" +
-                             "2. Game\n";
-        String textoTipo = JOptionPane.showInputDialog(null,
-                mensajeTipo,
-                "Agregar Ítem",
-                JOptionPane.QUESTION_MESSAGE);
+       String[] opciones = {"Game", "Movie"};
 
-        if (textoTipo == null) return;
+        int eleccion = JOptionPane.showOptionDialog(
+                null,
+                "¿Que deseas agregar?",
+                "Elige una opcion",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
 
-        int tipoItem;
-        try {
-            tipoItem = Integer.parseInt(textoTipo);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Tipo inválido.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
+        if (eleccion == 0) {
+            System.out.println("Elegiste Game");
+        } else if (eleccion == 1) {
+            System.out.println("Elegiste Movie");
         }
+
 
         String codigoIngresado = JOptionPane.showInputDialog(null,
                 "Ingrese código del ítem:",
@@ -150,7 +149,7 @@ public class SistemaRentaMultimedia extends JFrame {
 
         RentItem nuevoItem = null;
 
-        if (tipoItem == 1) {
+        if (eleccion == 0) {
 
             double precioBase;
             try {
@@ -212,16 +211,10 @@ public class SistemaRentaMultimedia extends JFrame {
 
             nuevoItem = nuevaPelicula;
 
-        } else if (tipoItem == 2) {
+        } else if (eleccion == 1) {
             Game nuevoJuego = new Game(codigoIngresado.trim(),
                                        nombreIngresado.trim());
             nuevoItem = nuevoJuego;
-        } else {
-            JOptionPane.showMessageDialog(null,
-                    "Tipo de ítem no reconocido.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
         }
 
         try {
