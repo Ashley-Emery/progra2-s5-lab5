@@ -12,6 +12,7 @@ package progra2.s5.lab5;
 import java.util.Calendar;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import com.toedter.calendar.JCalendar;
 
 public class Game extends RentItem implements MenuActions {
     
@@ -87,41 +88,31 @@ public class Game extends RentItem implements MenuActions {
                 JOptionPane.INFORMATION_MESSAGE);
     }
     
-    public void actualizarFechaPublicacionDesdeGUI() {
-        try {
-            String textoAnio = JOptionPane.showInputDialog(null,
-                    "Ingrese año de publicación:",
-                    "Fecha publicación",
-                    JOptionPane.QUESTION_MESSAGE);
-            if (textoAnio == null) return;
+    public void actualizarFechaPublicacionConCalendario() {
+        JCalendar calendario = new JCalendar();
 
-            String textoMes = JOptionPane.showInputDialog(null,
-                    "Ingrese mes (1-12):",
-                    "Fecha publicación",
-                    JOptionPane.QUESTION_MESSAGE);
-            if (textoMes == null) return;
+        int opcion = JOptionPane.showConfirmDialog(
+                null,
+                calendario,
+                "Seleccione la fecha de publicación",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
 
-            String textoDia = JOptionPane.showInputDialog(null,
-                    "Ingrese día:",
-                    "Fecha publicación",
-                    JOptionPane.QUESTION_MESSAGE);
-            if (textoDia == null) return;
+        if (opcion == JOptionPane.OK_OPTION) {
+            Calendar fecha = Calendar.getInstance();
+            fecha.setTime(calendario.getDate());
 
-            int anio = Integer.parseInt(textoAnio);
-            int mes = Integer.parseInt(textoMes);
-            int dia = Integer.parseInt(textoDia);
+            int anio = fecha.get(Calendar.YEAR);
+            int mes = fecha.get(Calendar.MONTH) + 1;
+            int dia = fecha.get(Calendar.DAY_OF_MONTH);
 
             setFechaPublicacion(anio, mes, dia);
 
             JOptionPane.showMessageDialog(null,
-                    "Fecha de publicación actualizada.",
+                    "Fecha actualizada correctamente.",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Datos inválidos.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -139,11 +130,36 @@ public class Game extends RentItem implements MenuActions {
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
+    public String construirEspecificacionesRecursivo(int indiceActual) {
+        if (indiceActual >= listaEspecificaciones.size()) {
+            return "";
+        }
+        String lineaActual = (indiceActual + 1) + ". " +
+                             listaEspecificaciones.get(indiceActual) + "\n";
+        return lineaActual + construirEspecificacionesRecursivo(indiceActual + 1);
+    }
+    
+    public void mostrarEspecificacionesGUI() {
+        if (listaEspecificaciones.isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "No hay especificaciones registradas.",
+                    "Especificaciones",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String texto = construirEspecificacionesRecursivo(0);
+        JOptionPane.showMessageDialog(null,
+                texto,
+                "Especificaciones",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
     
     public void ejecutarOpcion(int opcion) {
         switch (opcion) {
             case 1:
-                actualizarFechaPublicacionDesdeGUI();
+                actualizarFechaPublicacionConCalendario();
                 break;
             case 2:
                 agregarEspecificacionDesdeGUI();
