@@ -46,5 +46,16 @@ public class RentItem {
         return imagenItem;
     }
     
+    public void setImageItem(ImageIcon imageItem){
+        this.imagenItem = imageItem;
+    }
+    
+    public String toString(){
+        return "Codigo: " + codigoItem +
+                ", Nombre: " + nombreItem +
+                ", Precio Base: " + precioBaseRenta +
+                ", Copias: " + cantidadCopias;
+    }
+    
     
 }
